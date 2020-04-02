@@ -1,0 +1,160 @@
+<< 스프링 시큐리티의 사용 >>
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+
+
+/
+/all/list
+/insert
+/admin/cmd1
+
+
+/, /all		모든 요청은 로그인 상관없이 아무나 접근 할 수 있어요!
+/admin		모든 요청은 ADMIN이라는 권한(role)이 있어야 사용할 수 
+				있어요!
+그나머지 요청은 로그인만 하면 사용할 수 있어요!
+
+
+스프링 시큐리는 
+	패스워드를 "tiger"이면
+		그래도 검사하지 않고 
+		암호화 하여 검사합니다.
+		그래서 우리가 데이터베이스에 
+		담을때도 암호화 해서 담아야 합니다.
+		
+		
+
+암호화를 위한 객체를 생성해요
+<bean id="passwordEncoder" 
+	class="PassWordEncoder"/>										
+
+
+mybatis 설정, vo생성
+	회원을 추가하는 메소드와
+	회원아이디를 매개변수로 받아 회원의 정보를 vo를 반환하는 메소드
+
+
+메인메소드가 있는 클래스에서 다음을 추가해요
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+
+실험을 위하여 두명의 레코드를 추가해요.
+//		DBManager.insertMember(new MemberVo("tiger", PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("tiger"), "홍길동", "USER"));
+//		DBManager.insertMember(new MemberVo("master", PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("1234"), "곽동길", "ADMIN"));
+
+스프링 시큐리티가 로그인 인증처리 할 때
+	패스워드는 인코딩(암호화) 하여 검사하기 때문에 
+	우리도 db에 추가할 때는 인코딩해야 합니다.
+	
+그다음 실행할 대는 주석으로 막아주세요.	
+	
+======================================================
+
+사용자별 어떤 서비르를 받을 수 있는지에 대한
+시큐리티 환경설정을 합니다.
+
+WebSecurityConfiguerAdapter 클래스를 확장(상속)합니다.
+
+다음과 같이 작성해요
+
+@Configuration				<--- 자동으로 스캔되어야 하니 설정해요.
+@EnableWebSecurity			<--- 어노테이션 기반의 시큐리티 설정임을 나타냅니다.
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// TODO Auto-generated method stub
+		//super.configure(http);
+		
+		http.authorizeRequests()					<--- 사용자의 요청별 권한 설정을 하겠습니다.
+		.mvcMatchers("/","/all/**").permitAll()		<--- 이러한 요청들은 아무나 다 사용할 수 있어요
+		.mvcMatchers("/admin/**").hasRole("ADMIN")	<--- 이러한 요청들은 ADMIN권한(role)이 있어야 사용할 수 있어요.
+		.anyRequest().authenticated();				<--- 그 나머지 요청들은 인증(로그인)만 거치면 사용할 수 있어요.
+	}
+	
+}
+
+========================================================
+
+데이터베이스 연동하여 
+	사용자 설정을 해 줍니다.
+	
+확장	 : 클래스를 상속
+구현	 : 인터페이스를 구현
+
+사용자 설정을 위해서는
+스프링 시큐리티가 제공 UserDetailService를 구현합니다.
+
+Service가 뭐에요??
+
+Controller		: 사용자 요청에 처리
+Service			: 사용자 요청에 따라
+					바로 Dao를 처리하는 것 뿐이라
+					이것 저것 처리해야 될 일이 많아요
+					이런 처리를 Controller넣기도 가독성이 떨어지ㅗ
+					Dao에 넣기도 그래요..
+					이러할때 Service를 사용합니다.
+Dao				: DB에 엑세스
+
+	
+======================================================
+@Service
+public class MemberService implements UserDetailsService {
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		// TODO Auto-generated method stub
+		
+		//매개변수로 전달받은 username에 해당하는 
+		//회원의 정보를 db로 부터 꺼내와요
+		MemberVo m = DBManager.selectMember(username);
+		
+		//만약 username에 해당하는 회원이 없으면 
+		//예외를 발생시켜요
+		if(m == null) {
+			throw new UsernameNotFoundException(username);
+		}
+		
+		// 우리가 db로 부터 뽑아온 회원의 정보를 
+		// 스프링시큐리가 인증절차를 할 수 있는 객체로 
+		// 만들어 일을 맡깁니다.
+		
+		return User.builder()
+				.username(m.getId())
+				.password(m.getPwd())
+				.roles(m.getRole())
+				.build();
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
