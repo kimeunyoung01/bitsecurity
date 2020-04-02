@@ -19,8 +19,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.mvcMatchers("/admin/**").hasRole("ADMIN")
 		.anyRequest().authenticated();
 		
-		http.formLogin(); //스프링 시큐리티가 제공하는 로그인폼을 사용하겠습니다.
-		http.httpBasic(); //http기본 프로토콜을 사용하겠습니다.
+		//http.formLogin(); 
+		//스프링 시큐리티가 제공하는 로그인폼을 사용하겠습니다.
+		
+		//로그인 페이지를 사용자가 만들어 지정해 보자
+		http.formLogin().loginPage("/login").permitAll();
+		
+		
+		
+		http.httpBasic(); 
+		//http기본 프로토콜을 사용하겠습니다.
 	}
 	
 }
