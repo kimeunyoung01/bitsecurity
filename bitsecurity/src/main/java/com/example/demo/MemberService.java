@@ -18,13 +18,19 @@ public class MemberService implements UserDetailsService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	//패스워드 인코딩을 위한 객체를 맴버로 선언해요
+	//이 객체는 BitsecurityApplication클래스에서 
+	// 		제공되는 객체를 자동으로 의존관계 설정해요
 	
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	//컨트롤러 준 vo에 들어있는 패스워드를 인코딩하여 
+	//다시 vo에 담아요
 	public int insertMember(MemberVo m) {
-		m.setPwd(passwordEncoder.encode(m.getPwd()));
+		String encPwd = passwordEncoder.encode(m.getPwd());
+		m.setPwd(encPwd);
 		int re = DBManager.insertMember(m);
 		return re;
 	}
