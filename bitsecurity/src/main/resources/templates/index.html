@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
@@ -6,7 +7,9 @@
 </head>
 <body>
 	<h2>비트몰</h2>
+	
 	<a sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>
+	
 	<hr>
 	
 	<p th:text="${m.id}"></p>
