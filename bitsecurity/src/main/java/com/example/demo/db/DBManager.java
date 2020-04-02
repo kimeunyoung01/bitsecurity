@@ -28,6 +28,13 @@ public class DBManager {
 	
 	
 	
+	public static List<MemberVo> selectMemberAll(){
+		SqlSession session = factory.openSession();
+		List<MemberVo> list  = session.selectList("member.selectAll");
+		session.close();
+		return list;
+	}
+	
 	public static MemberVo selectMember(String username){
 		SqlSession session = factory.openSession();
 		MemberVo m = session.selectOne("member.selectMember",username);

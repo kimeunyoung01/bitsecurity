@@ -10,4 +10,8 @@
   <select id="selectMember" resultType="memberVo">
     select * from member100 where id=#{username}
   </select>
+  
+  <select id="selectAll" resultType="memberVo">
+  	select * from member100
+  </select>
 </mapper>
