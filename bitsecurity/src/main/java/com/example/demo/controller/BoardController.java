@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BoardController {
 	
+	@RequestMapping("/hello")
+	public String hello() {
+		return "hello";
+	}
+	
+	
 	@GetMapping("/all/list")
 	public String list() {
 		return "list";
