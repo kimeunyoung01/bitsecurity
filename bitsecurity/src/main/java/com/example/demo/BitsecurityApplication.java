@@ -3,18 +3,21 @@ package com.example.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.db.DBManager;
 import com.example.demo.vo.MemberVo;
 
+@Configuration
 @SpringBootApplication
 public class BitsecurityApplication {
 
 	//패스워드 암호화를 위한 객체를 생성해요
 	@Bean
 	public PasswordEncoder passwordEncoder() {
+		System.out.println("패스워드 인코딩 객체 생성됨");
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 	
