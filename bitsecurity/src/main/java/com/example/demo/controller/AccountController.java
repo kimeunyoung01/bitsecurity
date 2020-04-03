@@ -9,7 +9,7 @@ import com.example.demo.vo.TransferVo;
 @RestController
 public class AccountController {
 	
-	@GetMapping("/transfer")
+	@GetMapping("/all/transfer")
 	public String transfer(TransferVo t) {
 		String str = "ok";
 		DBManager.transfer(t);

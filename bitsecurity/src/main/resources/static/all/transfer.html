@@ -8,7 +8,7 @@
 $(function(){
 	$("#btnOK").click(function(){
 		var t = $("#f").serialize();
-		$.ajax("transfer", {data:t, success:function(data){
+		$.ajax("/all/transfer", {data:t, success:function(data){
 			alert(data);
 		}});
 	});

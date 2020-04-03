@@ -27,12 +27,16 @@ public class DBManager {
 	
 	//계좌이체를 위한 메소드를 정의해요
 	public static int transfer(TransferVo t) {
-		int re = -1;
-		SqlSession session = factory.openSession(true);
-		session.update("account.withdraw",t);
-		session.update("account.deposit",t);
+		int re = 0;
+		SqlSession session = factory.openSession(false);
+		re += session.update("account.withdraw",t);
+		re += session.update("account.deposit",t);
 		
-		//최봉현 이순신 1000
+		if( re == 2) {
+			session.commit();
+		}else {
+			session.rollback();
+		}
 		
 		return re;
 	}
