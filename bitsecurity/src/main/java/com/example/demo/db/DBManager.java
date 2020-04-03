@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.example.demo.vo.MemberVo;
+import com.example.demo.vo.TransferVo;
 
 
 public class DBManager {
@@ -24,7 +25,17 @@ public class DBManager {
 		}
 	}
 	
-	
+	//계좌이체를 위한 메소드를 정의해요
+	public static int transfer(TransferVo t) {
+		int re = -1;
+		SqlSession session = factory.openSession(true);
+		session.update("account.withdraw",t);
+		session.update("account.deposit",t);
+		
+		//최봉현 이순신 1000
+		
+		return re;
+	}
 	
 	
 	

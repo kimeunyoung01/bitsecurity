@@ -20,6 +20,7 @@
   </environments>
   <mappers>
     <mapper resource="com/example/demo/db/MemberMapper.xml"/>
+    <mapper resource="com/example/demo/db/AccountMapper.xml"/>
   </mappers>
 </configuration>
 
